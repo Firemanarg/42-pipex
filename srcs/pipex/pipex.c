@@ -6,7 +6,7 @@
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/29 18:41:14 by lsilva-q          #+#    #+#             */
-/*   Updated: 2022/05/30 16:47:48 by lsilva-q         ###   ########.fr       */
+/*   Updated: 2022/05/30 20:27:50 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 void	init_data(t_data *data)
 {
 	data->pid = -1;
-	data->fd_infile = -12;
-	data->fd_outfile = -12;
+	data->fd_infile = -1;
+	data->fd_outfile = -1;
 	data->argc = 0;
 	data->argv = NULL;
 	data->envp = NULL;
 	data->cmd_count = 0;
 	data->paths = NULL;
+	data->fd[0] = 0;
+	data->fd[1] = 0;
 }
 
 static void	pipex_loop(t_data *data, int i)
@@ -37,7 +39,15 @@ static void	pipex_loop(t_data *data, int i)
 	if (data->pid == -1)
 		error(data, NULL);
 	if (data->pid == 0)
+	{
+		ft_putstr_fd("Ain saiu!\n", 2);
+		if (i == 0 && data->fd_infile == -1)
+		{
+			//ft_putstr_fd("Ain entrou!\n", 2);
+			error(NULL, NULL);
+		}
 		exec_cmd(data, i);
+	}
 }
 
 void	pipex(t_data *data)
@@ -46,8 +56,11 @@ void	pipex(t_data *data)
 	pid_t	w;
 	int		wstatus;
 
-	dup2(data->fd_infile, STDIN_FILENO);
-	close(data->fd_infile);
+	if (data->fd_infile != -1)
+	{
+		dup2(data->fd_infile, STDIN_FILENO);
+		close(data->fd_infile);
+	}
 	i = 0;
 	while (i < data->cmd_count)
 	{
@@ -55,9 +68,9 @@ void	pipex(t_data *data)
 		w = waitpid(data->pid, &wstatus, 0);
 		if (w == -1)
 			error(data, NULL);
-		if (WIFEXITED(wstatus))
+		if (WIFEXITED(wstatus) && i == data->cmd_count - 1)
 		{
-			if (WEXITSTATUS(wstatus) == 127 && i == data->cmd_count - 1)
+			if (WEXITSTATUS(wstatus) == 127)
 				error_cmd_not_found(data, NULL);
 			else if (WEXITSTATUS(wstatus) != 0)
 				error(data, NULL);
@@ -94,8 +107,9 @@ void	exec_cmd(t_data *data, int i)
 
 	if (i == data->cmd_count - 1)
 	{
-		data->fd_outfile = open(data->argv[data->argc - 1], \
-						O_WRONLY | O_CREAT | O_TRUNC, 0777);
+		data->fd_outfile = open(
+				data->argv[data->argc - 1],
+				O_WRONLY | O_CREAT | O_TRUNC, 0664);
 		if (data->fd_outfile == -1)
 			error(data, NULL);
 		dup2(data->fd_outfile, STDOUT_FILENO);

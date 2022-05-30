@@ -6,7 +6,7 @@
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/29 18:41:07 by lsilva-q          #+#    #+#             */
-/*   Updated: 2022/05/30 12:14:16 by lsilva-q         ###   ########.fr       */
+/*   Updated: 2022/05/30 20:27:31 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	error(t_data *data, char **cmd)
 {
 	if (cmd != NULL)
 		clean_array(cmd);
-	if (data->paths != NULL)
+	if (data != NULL && data->paths != NULL)
 		clean_array(data->paths);
 	perror("Error");
 	exit(EXIT_FAILURE);

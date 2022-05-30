@@ -6,7 +6,7 @@
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/29 18:41:35 by lsilva-q          #+#    #+#             */
-/*   Updated: 2022/05/30 13:06:03 by lsilva-q         ###   ########.fr       */
+/*   Updated: 2022/05/30 20:25:30 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,16 @@ int	main(int argc, char *argv[], char *envp[])
 	data.argc = argc;
 	data.argv = argv;
 	data.envp = envp;
+	ft_putstr_fd("AAAA!\n", 2);
 	data.fd_infile = open(argv[1], O_RDONLY);
-	if (data.fd_infile == -1)
-		error(&data, NULL);
-	data.fd_outfile = -1;
+	ft_putstr_fd("BBBB!\n", 2);
+	//if (data.fd_infile == -1)
+		//error(&data, NULL);
 	data.paths = get_paths(envp);
 	if (data.paths == NULL)
 		error(&data, NULL);
 	data.cmd_count = argc - 3;
 	pipex(&data);
 	clean_array(data.paths);
-	return (0);
+	return (EXIT_SUCCESS);
 }
