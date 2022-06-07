@@ -26,11 +26,7 @@ int	main(int argc, char *argv[], char *envp[])
 	data.argc = argc;
 	data.argv = argv;
 	data.envp = envp;
-	ft_putstr_fd("AAAA!\n", 2);
 	data.fd_infile = open(argv[1], O_RDONLY);
-	ft_putstr_fd("BBBB!\n", 2);
-	//if (data.fd_infile == -1)
-		//error(&data, NULL);
 	data.paths = get_paths(envp);
 	if (data.paths == NULL)
 		error(&data, NULL);

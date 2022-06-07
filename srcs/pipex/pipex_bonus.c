@@ -38,10 +38,8 @@ void	pipex(t_data *data)
 	pid_t	w;
 	int		wstatus;
 
-	if (data->fd_infile != -1)
-		dup2(data->fd_infile, STDIN_FILENO);
-	if (data->fd_infile != -1)
-		close(data->fd_infile);
+	dup2(data->fd_infile, STDIN_FILENO);
+	close(data->fd_infile);
 	i = 0;
 	while (i < data->cmd_count)
 	{
@@ -49,12 +47,14 @@ void	pipex(t_data *data)
 		w = waitpid(data->pid, &wstatus, 0);
 		if (w == -1)
 			error(data, NULL);
-		if (WIFEXITED(wstatus) && i == data->cmd_count - 1
-			&& WEXITSTATUS(wstatus) != 0)
+		if (WIFEXITED(wstatus) && i == data->cmd_count - 1)
 		{
-			if (data != NULL && data->paths != NULL)
-				clean_array(data->paths);
-			exit(WEXITSTATUS(wstatus));
+			if (WEXITSTATUS(wstatus) != 0)
+			{
+				if (data != NULL && data->paths != NULL)
+					clean_array(data->paths);
+				exit(WEXITSTATUS(wstatus));
+			}
 		}
 		close(data->fd[1]);
 		i += 1;

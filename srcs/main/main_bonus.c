@@ -6,12 +6,12 @@
 /*   By: lsilva-q <lsilva-q@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/29 18:41:35 by lsilva-q          #+#    #+#             */
-/*   Updated: 2022/05/30 13:06:08 by lsilva-q         ###   ########.fr       */
+/*   Updated: 2022/06/06 23:41:19 by lsilva-q         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft_x.h"
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 int	main(int argc, char *argv[], char *envp[])
 {
@@ -27,14 +27,11 @@ int	main(int argc, char *argv[], char *envp[])
 	data.argv = argv;
 	data.envp = envp;
 	data.fd_infile = open(argv[1], O_RDONLY);
-	if (data.fd_infile == -1)
-		error(&data, NULL);
-	data.fd_outfile = -1;
 	data.paths = get_paths(envp);
 	if (data.paths == NULL)
 		error(&data, NULL);
 	data.cmd_count = argc - 3;
 	pipex(&data);
 	clean_array(data.paths);
-	return (0);
+	return (EXIT_SUCCESS);
 }
